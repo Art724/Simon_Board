@@ -1,26 +1,26 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 11/27/2024 11:28:12 AM
-// Design Name: 
-// Module Name: LFSR
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
+module LFSR #(parameter FILL=16'hACE1) (output random, input step, rerun, randomize, clk, reset);
 
+reg [15:0] lfsr, rerun_reg;
+reg randomize_d;
+wire fb = lfsr[0] ^ lfsr[2] ^ lfsr[3] ^ lfsr[5];
+wire falling_edge_randomize  = ~randomize & randomize_d;
+assign random = lfsr[0];
 
-module LFSR(
-
-    );
+always @(posedge clk) begin
+  if (reset) begin
+	lfsr <= FILL; // could be anything other than 0
+  end
+  else begin
+	randomize_d <= randomize;
+	if (step | randomize) begin
+  	lfsr <={fb, lfsr[15:1]};
+	end
+	if (rerun) begin
+  	lfsr <= rerun_reg;
+	end
+	if (falling_edge_randomize) begin
+  	rerun_reg <= lfsr;
+	end
+  end
+end
 endmodule
