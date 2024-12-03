@@ -45,7 +45,7 @@ end
 // State Machine Proper
 always @* begin
     colorSelectEn = 0;
-    lcd_enable = 0;
+    lcd_enable = 0; 
     
 end
 
